@@ -47,12 +47,17 @@
       <ul>
         <li v-for="(todo, index) in todos" :key="index">
           <label class="wrapper">
-            <input :class="{ done: todo.done }" @click="doneTodo(todo)" type="checkbox" />
+            <input
+              :class="{ done: todo.done }"
+              @click="doneTodo(todo)"
+              type="checkbox"
+            />
             <span class="checkmark"></span>
           </label>
           <span :class="{ done: todo.done }" @click="doneTodo(todo)">{{
             todo.content
           }}</span>
+          <span>{{ todo.date }}</span>
           <button @click="removeTodo(index)">Remove</button>
         </li>
       </ul>
@@ -97,26 +102,37 @@ export default {
       {
         done: false,
         content: "Create a report",
+        date: format_time(12345)
       },
       {
         done: false,
         content: "Create UI",
+        date: format_time(72344)
+        // date: randomDate(new Date(2012, 0, 1), new Date()),
       },
       {
         done: false,
         content: "Create user and wire flow",
+        date: format_time(23341)
+        // date: randomDate(new Date(2012, 0, 1), new Date()),
       },
       {
         done: false,
         content: "Create wireframe",
+        date: format_time(15340)
+        // date: randomDate(new Date(2012, 0, 1), new Date()),
       },
       {
         done: false,
         content: "Organise a handover with the developers",
+        date: format_time(12365)
+        // date: randomDate(new Date(2012, 0, 1), new Date()),
       },
       {
         done: false,
         content: "Create workshop",
+        date: format_time(32345)
+        // date: randomDate(new Date(2012, 0, 1), new Date()),
       },
     ];
     const Recent = [
@@ -147,6 +163,22 @@ export default {
     function doneTodo(todo) {
       todo.done = !todo.done;
       saveData();
+    }
+
+    // function randomDate(start, end) {
+    //   return new Date(
+    //     start.getTime() + Math.random() * (end.getTime() - start.getTime())
+    //   );
+    // }
+    // date: randomDate(new Date(2012, 0, 1), new Date())
+
+    function format_time(s) {
+      const dtFormat = new Intl.DateTimeFormat("en-GB", {
+        timeStyle: "medium",
+        timeZone: "UTC",
+      });
+
+      return dtFormat.format(new Date(s * 1e3));
     }
 
     function removeTodo(index) {
