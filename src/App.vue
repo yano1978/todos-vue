@@ -1,180 +1,177 @@
 <template>
-	<h1>ToDo App</h1>
-	<form @submit.prevent="addTodo()">
-		<label>New ToDo </label>
-		<input
-			v-model="newTodo"
-			name="newTodo"
-			autocomplete="off"
-		>
-		<button>Add ToDo</button>
-	</form>
-	<h2>ToDo List</h2>
-	<ul>
-		<li
-			v-for="(todo, index) in todos"
-			:key="index"
-		>
-			<span
-				:class="{ done: todo.done }"
-				@click="doneTodo(todo)"
-			>{{ todo.content }}</span>
-			<button @click="removeTodo(index)">Remove</button>
-		</li>
-	</ul>
-	<h4 v-if="todos.length === 0">Empty list.</h4>
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <button
+        class="nav-link active"
+        id="nav-home-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-home"
+        type="button"
+        role="tab"
+        aria-controls="nav-home"
+        aria-selected="true"
+      >
+        To do list
+      </button>
+      <button
+        class="nav-link"
+        id="nav-profile-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#nav-profile"
+        type="button"
+        role="tab"
+        aria-controls="nav-profile"
+        aria-selected="false"
+      >
+        Recent
+      </button>
+    </div>
+  </nav>
+  <div class="tab-content" id="nav-tabContent">
+    <form @submit.prevent="addTodo()">
+      <label>Add a task</label>
+      <input
+        v-model="newTodo"
+        name="newTodo"
+        autocomplete="off"
+        :placeholder="placeholder"
+      />
+      <button>Add a task</button>
+    </form>
+    <div
+      class="tab-pane fade show active"
+      id="nav-home"
+      role="tabpanel"
+      aria-labelledby="nav-home-tab"
+    >
+      <ul>
+        <li v-for="(todo, index) in todos" :key="index">
+          <label class="wrapper">
+            <input :class="{ done: todo.done }" @click="doneTodo(todo)" type="checkbox" />
+            <span class="checkmark"></span>
+          </label>
+          <span :class="{ done: todo.done }" @click="doneTodo(todo)">{{
+            todo.content
+          }}</span>
+          <button @click="removeTodo(index)">Remove</button>
+        </li>
+      </ul>
+      <h4 v-if="todos.length === 0">Empty list.</h4>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="nav-profile"
+      role="tabpanel"
+      aria-labelledby="nav-profile-tab"
+    >
+      <ul>
+        <li v-for="(recent, index) in recents" :key="index">
+          <span>{{ recent.content }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
-	import { ref } from 'vue';
-	export default {
-		name: 'App',
-		setup () {
-			const newTodo = ref('');
-			const defaultData = [{
-				done: false,
-				content: 'Write a blog post'
-			}]
-			const todosData = JSON.parse(localStorage.getItem('todos')) || defaultData;
-			const todos = ref(todosData);
-			function addTodo () {
-				if (newTodo.value) {
-					todos.value.push({
-						done: false,
-						content: newTodo.value
-					});
-					newTodo.value = '';
-				}
-				saveData();
-			}
+import { ref } from "vue";
+export default {
+  name: "App",
+  created: function() {
+    document.body.style.backgroundColor = "#27292d";
+    document.body.style.color = "#fff";
+  },
+  unmounted: function() {
+    document.body.style.backgroundColor = null;
+    document.body.style.color = null;
+  },
+  data() {
+    return {
+      text: "",
+      placeholder: "Enter your task",
+    };
+  },
+  setup() {
+    const newTodo = ref("");
+    const TodoList = [
+      {
+        done: false,
+        content: "Create a report",
+      },
+      {
+        done: false,
+        content: "Create UI",
+      },
+      {
+        done: false,
+        content: "Create user and wire flow",
+      },
+      {
+        done: false,
+        content: "Create wireframe",
+      },
+      {
+        done: false,
+        content: "Organise a handover with the developers",
+      },
+      {
+        done: false,
+        content: "Create workshop",
+      },
+    ];
+    const Recent = [
+      {
+        done: false,
+        content: "Book client kick off meeting",
+      },
+      {
+        done: false,
+        content: "Send tender",
+      },
+    ];
+    const todosData = JSON.parse(localStorage.getItem("todos")) || TodoList;
+    const todos = ref(todosData);
+    const completedData = JSON.parse(localStorage.getItem("recents")) || Recent;
+    const recents = ref(completedData);
+    function addTodo() {
+      if (newTodo.value) {
+        todos.value.push({
+          done: false,
+          content: newTodo.value,
+        });
+        newTodo.value = "";
+      }
+      saveData();
+    }
 
-			function doneTodo (todo) {
-				todo.done = !todo.done
-				saveData();
-			}
+    function doneTodo(todo) {
+      todo.done = !todo.done;
+      saveData();
+    }
 
-			function removeTodo (index) {
-				todos.value.splice(index, 1);
-				saveData();
-			}
+    function removeTodo(index) {
+      todos.value.splice(index, 1);
+      saveData();
+    }
 
-			function saveData () {
-				const storageData = JSON.stringify(todos.value);
-				localStorage.setItem('todos', storageData);
-			}
+    function saveData() {
+      const storageData = JSON.stringify(todos.value);
+      localStorage.setItem("todos", storageData);
+    }
 
-			return {
-				todos,
-				newTodo,
-				addTodo,
-				doneTodo,
-				removeTodo,
-				saveData
-			}
-		}
-	}
+    return {
+      todos,
+      recents,
+      newTodo,
+      addTodo,
+      doneTodo,
+      removeTodo,
+      saveData,
+    };
+  },
+};
 </script>
 
 <style lang="scss">
-$border: 2px solid
-	rgba(
-		$color: white,
-		$alpha: 0.35,
-	);
-$size1: 6px;
-$size2: 12px;
-$size3: 18px;
-$size4: 24px;
-$size5: 48px;
-$backgroundColor: #27292d;
-$textColor: white;
-$primaryColor: #a0a4d9;
-$secondTextColor: #1f2023;
-body {
-	margin: 0;
-	padding: 0;
-	font-family: Avenir, Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	background-color: $backgroundColor;
-	color: $textColor;
-	#app {
-		max-width: 600px;
-		margin-left: auto;
-		margin-right: auto;
-		padding: 20px;
-		h1 {
-			font-weight: bold;
-			font-size: 28px;
-			text-align: center;
-		}
-		form {
-			display: flex;
-			flex-direction: column;
-			width: 100%;
-			label {
-				font-size: 14px;
-				font-weight: bold;
-			}
-			input,
-			button {
-				height: $size5;
-				box-shadow: none;
-				outline: none;
-				padding-left: $size2;
-				padding-right: $size2;
-				border-radius: $size1;
-				font-size: 18px;
-				margin-top: $size1;
-				margin-bottom: $size2;
-			}
-			input {
-				background-color: transparent;
-				border: $border;
-				color: inherit;
-			}
-		}
-		button {
-			cursor: pointer;
-			background-color: $primaryColor;
-			border: 1px solid $primaryColor;
-			color: $secondTextColor;
-			font-weight: bold;
-			outline: none;
-			border-radius: $size1;
-		}
-		h2 {
-			font-size: 22px;
-			border-bottom: $border;
-			padding-bottom: $size1;
-		}
-		ul {
-			padding: 10px;
-			li {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				border: $border;
-				padding: $size2 $size4;
-				border-radius: $size1;
-				margin-bottom: $size2;
-				span {
-					cursor: pointer;
-				}
-				.done {
-					text-decoration: line-through;
-				}
-				button {
-					font-size: $size2;
-					padding: $size1;
-				}
-			}
-		}
-		h4 {
-			text-align: center;
-			opacity: 0.5;
-			margin: 0;
-		}
-	}
-}
+@import "./assets/styles/scss/main.scss";
 </style>
