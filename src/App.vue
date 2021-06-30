@@ -1,18 +1,30 @@
 <style lang="scss">
-  @import "./assets/styles/scss/main.scss";
+@import "./assets/styles/scss/main.scss";
 </style>
 <template>
- <form @submit.prevent="addTodo()">
-      <label>Add a task</label>
-      <textarea
-        v-model="newTodo"
-        class="add-todo"
-        name="newTodo"
-        autocomplete="off"
-        :placeholder="placeholder"
-      />
-      <button class="add-btn"><i class="fa fa-plus"></i>Add a task</button>
-    </form>
+  <header>
+    <div class="navbar shadow-sm">
+      <div class="container d-flex justify-content-between">
+        <a href="#" class="navbar-brand d-flex align-items-center">
+          <h5>
+            Click-Bait Industries
+          </h5>
+        </a>
+          <img class="avatar" src="https://i.pravatar.cc/50" alt="random-avatar" />
+      </div>
+    </div>
+  </header>
+  <form @submit.prevent="addTodo()">
+    <label>Add a task</label>
+    <textarea
+      v-model="newTodo"
+      class="add-todo"
+      name="newTodo"
+      autocomplete="off"
+      :placeholder="placeholder"
+    />
+    <button class="add-btn"><i class="fa fa-plus"></i>Add a task</button>
+  </form>
   <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
       <button
@@ -173,7 +185,6 @@ export default {
 
     //   return dtFormat.format(new Date(s * 1e3));
     // }
-
 
     function saveData() {
       const storageData = JSON.stringify(todos.value);

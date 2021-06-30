@@ -31,6 +31,30 @@ body {
             text-align: center;
         }
 
+        header {
+            img {
+                &.avatar {
+                    border-radius: 50px;
+                    border: 3px solid;
+                    cursor: pointer;
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+            }
+
+            h5 {
+                color: $textColor;
+                max-width: 100px;
+                word-break: break-word;
+                white-space: normal;
+
+                &:hover {
+                    color: $primaryColor;
+                }
+            }
+        }
+
         form {
             display: flex;
             flex-direction: column;
@@ -178,7 +202,7 @@ body {
                     height: 20px;
                     width: 20px;
                     background-color: $textColor;
-
+                    pointer-events: none;
                     border-radius: 15px;
                 }
 
