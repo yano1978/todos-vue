@@ -1,15 +1,14 @@
-$border: 2px solid rgba($color: white,
-    $alpha: 0.35,
-);
-$size1: 6px;
+$size1: 8px;
 $size2: 12px;
 $size3: 18px;
 $size4: 24px;
 $size5: 48px;
 $backgroundColor: #27292d;
 $textColor: white;
-$primaryColor: #a0a4d9;
+$primaryColor: #013BA7;
 $secondTextColor: #1f2023;
+$tabsColor: #d9e1ee;
+$border: 2px solid $tabsColor;
 
 body {
     margin: 0;
@@ -36,13 +35,17 @@ body {
             display: flex;
             flex-direction: column;
             width: 100%;
+            background: $textColor;
+            border-radius: $size1;
 
             label {
-                font-size: 14px;
+                font-size: 16px;
                 font-weight: bold;
+                color: $secondTextColor;
+                margin: 15px 15px 0;
             }
 
-            input,
+            textarea,
             button {
                 height: $size5;
                 box-shadow: none;
@@ -55,22 +58,71 @@ body {
                 margin-bottom: $size2;
             }
 
-            input {
+            textarea.add-todo {
                 background-color: transparent;
                 border: $border;
-                color: inherit;
+                color: $secondTextColor;
+                margin: 10px;
+                position: relative;
+                resize: none;
+                height: 70px;
+
+                &:focus::placeholder {
+                    color: white;
+                }
+
+                &:focus:-ms-input-placeholder {
+                    color: white;
+                }
+
+                &:focus::-ms-input-placeholder {
+                    color: white;
+                }
             }
+        }
+
+        nav {
+            margin-top: 20px;
+        }
+
+        .nav-tabs {
+            border-bottom: none;
         }
 
         button {
             cursor: pointer;
             background-color: $primaryColor;
             border: 1px solid $primaryColor;
-            color: $secondTextColor;
+            color: $textColor;
             font-weight: bold;
             outline: none;
             border-top-left-radius: $size1;
             border-top-right-radius: $size1;
+
+            &.nav-link {
+                background-color: $tabsColor;
+                border: none;
+                color: $secondTextColor;
+                padding: 10px 20px;
+                font-size: $size3;
+
+                &.active {
+                    background-color: $textColor;
+                }
+            }
+
+            &.add-btn {
+                margin-left: auto;
+                margin-right: 10px;
+                font-size: 16px;
+                height: 40px;
+                padding: 0 15px;
+                margin-bottom: 15px;
+            }
+
+            i {
+                margin-right: 5px;
+            }
         }
 
         h2 {
@@ -80,16 +132,22 @@ body {
         }
 
         ul {
-            padding: 10px;
+            padding: 20px;
+            background: #fff;
+            border-top-right-radius: $size1;
+            border-bottom-right-radius: $size1;
+            border-bottom-left-radius: $size1;
 
             li {
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-start;
                 align-items: center;
-                border: $border;
-                padding: $size2 $size4;
+                padding: $size3 $size4;
                 border-radius: $size1;
                 margin-bottom: $size2;
+                background-color: $tabsColor;
+                color: $secondTextColor;
+                font-weight: 700;
 
                 .wrapper {
                     display: block;
@@ -104,6 +162,7 @@ body {
                     user-select: none;
 
                 }
+
                 .wrapper input {
                     position: absolute;
                     opacity: 0;
@@ -111,44 +170,51 @@ body {
                     height: 0;
                     width: 0;
                 }
+
                 .checkmark {
                     position: absolute;
                     top: -5px;
                     left: -10px;
                     height: 20px;
                     width: 20px;
-                    background-color: #eee;
+                    background-color: $textColor;
 
                     border-radius: 15px;
                 }
+
                 .wrapper:hover input~.checkmark {
                     background-color: #ccc;
                 }
+
                 .wrapper input:checked~.checkmark {
-                    background-color: #013BA7;
+                    background-color: $primaryColor;
                 }
+
                 .checkmark:after {
                     content: "";
                     position: absolute;
                     display: none;
                 }
+
                 .wrapper input:checked~.checkmark:after {
                     display: block;
                 }
+
                 .wrapper .checkmark:after {
-                    left: 8px;
-                    top: 5px;
-                    width: 5px;
+                    left: 7px;
+                    top: 4px;
+                    width: 6px;
                     height: 10px;
                     border: solid white;
                     border-width: 0 3px 3px 0;
-                    -webkit-transform: rotate(45deg);
-                    -ms-transform: rotate(45deg);
-                    transform: rotate(45deg);
+                    -webkit-transform: rotate(43deg);
+                    -ms-transform: rotate(43deg);
+                    transform: rotate(43deg);
                 }
 
                 span {
                     cursor: pointer;
+                    font-size: $size3;
                 }
 
                 .done {
