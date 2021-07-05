@@ -145,7 +145,11 @@ export default {
     },
 
     undone() {
-      return this.todos.filter((i) => !i.done);
+      return this.todos
+      .filter((i) => !i.done)
+      .sort((a, b) => {
+          return a.days - b.days;
+        });
     },
   },
 
