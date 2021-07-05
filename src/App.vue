@@ -148,8 +148,8 @@ export default {
       return this.todos
       .filter((i) => !i.done)
       .sort((a, b) => {
-          return a.days - b.days;
-        });
+        return a.days - b.days;
+      });
     },
   },
 
