@@ -4,7 +4,7 @@ Simple todo app created with Vue
 ## Table of contents
 * [Technologies](#technologies)
 * [Setup](#setup)
-* [Authentication, Backend & Hosting](#notes)
+* [Authentication, Backend & Hosting](#authentication-backend--hosting)
 	
 ## Technologies
 Project is created with:
