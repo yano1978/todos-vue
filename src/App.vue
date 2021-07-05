@@ -6,11 +6,13 @@
     <div class="navbar shadow-sm">
       <div class="container d-flex justify-content-between">
         <a href="#" class="navbar-brand d-flex align-items-center">
-          <h5>
-            Click-Bait Industries
-          </h5>
+          <h5>Click-Bait Industries</h5>
         </a>
-          <img class="avatar" src="https://i.pravatar.cc/50" alt="random-avatar" />
+        <img
+          class="avatar"
+          src="https://i.pravatar.cc/50"
+          alt="random-avatar"
+        />
       </div>
     </div>
   </header>
@@ -65,13 +67,16 @@
           class="todo done"
           v-for="item of done"
           :key="item.id"
-          @click="toggle(item)"
+          @click="toggle(item, $event)"
         >
           <label class="wrapper">
             <input type="checkbox" />
             <span class="checkmark"></span>
           </label>
-          <span>{{ item.content }}</span>
+          <div>
+            <span>{{ item.content }}</span>
+            <small>{{ item.days }} days, {{ item.hours }} hours, {{ item.minutes }} minutes, {{ counter }} seconds</small>
+          </div>
         </li>
       </ul>
       <div v-if="!done.length" key="undone" class="empty done">
@@ -96,7 +101,10 @@
             <input type="checkbox" checked />
             <span class="checkmark"></span>
           </label>
-          <span>{{ item.content }}</span>
+          <div>
+            <span>{{ item.content }}</span>
+            <small>Completed {{ item.days }} days ago</small>
+          </div>
         </li>
       </ul>
       <div v-if="!undone.length" key="undone" class="empty undone">
@@ -110,18 +118,30 @@
 import { ref } from "vue";
 export default {
   name: "App",
-  created: function() {
+  mounted: function() {
+      this.$nextTick(() => {
+          this.timer();
+      });
+  },
+  created: function () {
     document.body.style.backgroundColor = "#27292d";
     document.body.style.color = "#fff";
   },
-  unmounted: function() {
+  unmounted: function () {
     document.body.style.backgroundColor = null;
     document.body.style.color = null;
   },
 
   computed: {
     done() {
-      return this.todos.filter((i) => i.done);
+      /* Filter by done & and sorted alphabetically */
+      return this.todos
+        .filter((i) => i.done)
+        .sort((a, b) => {
+          if (a.content < b.content) return -1;
+          if (a.content > b.content) return 1;
+          return 0;
+        });
     },
 
     undone() {
@@ -132,31 +152,78 @@ export default {
   methods: {
     toggle(todo) {
       todo.done = !todo.done;
+      if (!todo.done) {
+        this.timerToRemoveTodo(todo);
+        this.saveData();
+      }
     },
+    timer: function() { setInterval(this.ticker, 1000); },
+    ticker: function() { 
+       /* Update counters */
+      ++this.counter; 
+      if (this.counter == 60) {
+          this.counter = 0;
+          this.todos.map(todo => {
+            todo.minutes++;
+            if (todo.minutes == 60) {
+              todo.minutes = 0;
+              this.todos.map(todo => {
+                todo.hours++;
+              });
+              if (todo.hours == 24) {
+                  todo.hours = 0;
+                  todo.days++;
+              } 
+            }
+            return;
+          });
+        }
+      }
   },
   data() {
     return {
       text: "",
       placeholder: "Enter your task",
+      completedCounter: 0,
+      counter: 0
     };
+  },
+  watch: {
+    completedCounter: {
+      handler(value) {
+        if (value < 120) {
+          setTimeout(() => {
+            this.completedCounter++;
+            console.log(this.completedCounter);
+          }, 1000);
+        } else {
+          alert("Todo completed will be removed!");
+        }
+      },
+    },
   },
   setup() {
     const newTodo = ref("");
     const TodoList = [
-      { content: "Create a report", done: true },
-      { content: "Create UI", done: true },
-      { content: "Create a user and wire flow", done: true },
-      { content: "Create wireframes", done: true },
-      { content: "Organise a handover with the developers", done: true },
-      { content: "Create workshop", done: true },
-      { content: "Book client kick off meeting", done: false },
-      { content: "Send tender", done: false },
+      { id: 0, content: "Create a report", done: true, days: 23, hours: 2, minutes: 19, seconds: 0 },
+      { id: 1, content: "Create UI", done: true, days: 12, hours: 9, minutes: 0, seconds: 0 },
+      { id: 2, content: "Create a user and wire flow", done: true, days: 0, hours: 17, minutes: 45, seconds: 0 },
+      { id: 3, content: "Create wireframes", done: true, days: 1, hours: 2, minutes: 13, seconds: 0 },
+      { id: 4, content: "Organise a handover with the developers", done: true, days: 15, hours: 8, minutes: 32, seconds: 0 },
+      { id: 5, content: "Create workshop", done: true, days: 57, hours: 23, minutes: 59, seconds: 0 },
+      { id: 6, content: "Book client kick off meeting", done: false, days: 80, hours: 18, minutes: 15, seconds: 0 },
+      { id: 7, content: "Send tender", done: false, days: 16, hours: 9, minutes: 37, seconds: 0 }
     ];
     const todosData = JSON.parse(localStorage.getItem("todos")) || TodoList;
     const todos = ref(todosData);
     function addTodo() {
       if (newTodo.value) {
         todos.value.push({
+          seconds: 0,
+          minutes: 0,
+          hours: 0,
+          days: 0,
+          id: todos.value.length,
           done: true,
           content: newTodo.value,
         });
@@ -165,38 +232,28 @@ export default {
       saveData();
     }
 
-    function doneTodo(todo) {
-      todo.done = !todo.done;
-      saveData();
-    }
-
-    // function randomDate(start, end) {
-    //   return new Date(
-    //     start.getTime() + Math.random() * (end.getTime() - start.getTime())
-    //   );
-    // }
-    // date: randomDate(new Date(2012, 0, 1), new Date())
-
-    // function format_time(s) {
-    //   const dtFormat = new Intl.DateTimeFormat("en-GB", {
-    //     timeStyle: "medium",
-    //     timeZone: "UTC",
-    //   });
-
-    //   return dtFormat.format(new Date(s * 1e3));
-    // }
-
     function saveData() {
       const storageData = JSON.stringify(todos.value);
       localStorage.setItem("todos", storageData);
+    }
+
+    function timerToRemoveTodo(todo) {
+      if (todo.done == false) {
+        let timer = 0;
+        if (timer == 0) {
+            this.completedCounter = 0;
+            this.completedCounter++;
+            console.log("Counter starts running");
+        }
+      }
     }
 
     return {
       todos,
       newTodo,
       addTodo,
-      doneTodo,
       saveData,
+      timerToRemoveTodo
     };
   },
 };
